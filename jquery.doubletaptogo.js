@@ -14,7 +14,7 @@ Available for use under the MIT License
 		currentItem = undefined;
 	});
 	
-	$.fn.doubleTapToGo = function(action) {
+	$.fn.doubleTapToGo = function() {
 		
 		if (!('ontouchstart' in window) && !navigator.msMaxTouchPoints) return false;
 		
