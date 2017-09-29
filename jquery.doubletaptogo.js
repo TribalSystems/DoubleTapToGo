@@ -1,51 +1,38 @@
 /* 
 Double Tap to Go
-Author: Graffino (http://www.graffino.com)
-Version: 0.3
-Originally by Osvaldas Valutis, www.osvaldas.info	
+Authors: Osvaldas Valutis (www.osvaldas.info), Graffino (http://www.graffino.com), Tribal Systems
 Available for use under the MIT License
 */
 
-;(function($, window, document, undefined) {
+(function($) {
+	
+	var lastItem,
+		currentItem;
+	
+	$(document).on('click touchstart MSPointerDown', function() {
+		lastItem = currentItem;
+		currentItem = undefined;
+	});
+	
 	$.fn.doubleTapToGo = function(action) {
+		
+		if (!('ontouchstart' in window) && !navigator.msMaxTouchPoints) return false;
+		
+		this.each(function() {
 
-		if (!('ontouchstart' in window) &&
-			!navigator.msMaxTouchPoints &&
-			!navigator.userAgent.toLowerCase().match( /windows phone os 7/i )) return false;
-
-		if (action === 'unbind') {
-			this.each(function() {
-				$(this).off();
-				$(document).off('click touchstart MSPointerDown', handleTouch);	
-			});
-
-		} else {
-			this.each(function() {
-				var curItem = false;
-	
-				$(this).on('click', function(e) {
-					var item = $(this);
-					if (item[0] != curItem[0]) {
-						e.preventDefault();
-						curItem = item;
-					}
-				});
-	
-				$(document).on('click touchstart MSPointerDown', handleTouch); 
+			$(this).on('click', function(e) {
+				var $item = $(this);
 				
-				function handleTouch(e) {
-					var resetItem = true,
-						parents = $(e.target).parents();
-	
-					for (var i = 0; i < parents.length; i++)
-						if (parents[i] == curItem[0])
-							resetItem = false;
-	
-					if(resetItem)
-						curItem = false;
+				if ($item[0] != lastItem) {
+					e.preventDefault();
+					
+					setTimeout(function() {
+						lastItem = currentItem = $item[0];
+					}, 1);
 				}
 			});
-		}
+		});
+		
 		return this;	
 	};
-})(jQuery, window, document);
+})(jQuery);
